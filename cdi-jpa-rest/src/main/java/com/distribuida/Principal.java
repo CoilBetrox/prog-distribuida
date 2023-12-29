@@ -32,11 +32,44 @@ public class Principal {
 
         var persona = servicio.findById(Integer.valueOf(_id));
         if (persona == null){
-            //res.status(404);
+            res.status(404);
             halt(404, "Persona no encontrada");
         }
         return persona;
     }
+
+    static Persona crearPersona(Request req, Response res) {
+        var servicio = container.select(ServicioPersona.class).get();
+        res.type("application/json");
+        Gson gson = new Gson();
+        Persona nuevaPersona = gson.fromJson(req.body(), Persona.class);
+        servicio.insert(nuevaPersona);
+        return nuevaPersona;
+    }
+
+    static Persona actualizarPersona(Request req, Response res) {
+        var servicio = container.select(ServicioPersona.class).get();
+        res.type("application/json");
+        Gson gson = new Gson();
+        Persona personaActualizada = gson.fromJson(req.body(), Persona.class);
+        servicio.update(personaActualizada);
+        return personaActualizada;
+    }
+
+    static String eliminarPersona(Request req, Response res) {
+        var servicio = container.select(ServicioPersona.class).get();
+        res.type("application/json");
+        String _id = req.params(":id");
+        boolean eliminado = servicio.delete(Integer.valueOf(_id));
+
+        if (eliminado) {
+            return "Persona eliminada con éxito";
+        } else {
+            res.status(404);
+            return "Persona no encontrada";
+        }
+    }
+
     public static void main(String[] args) {
 
         container = SeContainerInitializer.newInstance().initialize();
@@ -63,6 +96,9 @@ public class Principal {
         Gson gson = new Gson();
         get("/personas", Principal::listarPersonas, gson::toJson);
         get("/personas/:id", Principal::buscarPersona, gson::toJson);
+        post("/personas", Principal::crearPersona, gson::toJson);
+        put("personas/:id", Principal::actualizarPersona, gson::toJson);
+        delete("/personas/:id", Principal::eliminarPersona, gson::toJson);
 
     }
 }

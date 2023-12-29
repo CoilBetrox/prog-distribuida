@@ -19,8 +19,6 @@ public class ServicioPersonaImpl implements ServicioPersona{
     }
 
 
-
-
     public void insert(Persona p){
         var tx = em.getTransaction();
         try {
@@ -31,12 +29,44 @@ public class ServicioPersonaImpl implements ServicioPersona{
             tx.rollback();
             //ex.printStackTrace();
         }
-
     }
 
     @Override
     public Persona findById(Integer id) {
         return em.find(Persona.class, id);
     }
+
+    @Override
+    public void update(Persona p) {
+        var tx = em.getTransaction();
+        try {
+            tx.begin();
+            em.merge(p);
+            tx.commit();
+        }catch (Exception ex){
+            tx.rollback();
+        }
+    }
+
+    @Override
+    public boolean delete(Integer id) {
+        var tx = em.getTransaction();
+        try {
+            tx.begin();
+            Persona persona = em.find(Persona.class, id);
+            if (persona != null){
+                em.remove(persona);
+                tx.commit();
+                return true;
+            }else {
+                tx.rollback();
+                return false;
+            }
+        }catch (Exception ex){
+            tx.rollback();
+            return false;
+        }
+    }
+
 
 }
