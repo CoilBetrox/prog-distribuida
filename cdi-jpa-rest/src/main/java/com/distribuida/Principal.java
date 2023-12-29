@@ -20,14 +20,14 @@ public class Principal {
     static List<Persona> listarPersonas(Request req, Response res){
         var servicio = container.select(ServicioPersona.class).get();
 
-        res.type("aplication/json");
+        res.type("application/json");
         return servicio.findAll();
     }
 
     static Persona buscarPersona(Request req, Response res){
         var servicio = container.select(ServicioPersona.class).get();
 
-        res.type("aplication/json");
+        res.type("application/json");
         String _id = req.params(":id");
 
         var persona = servicio.findById(Integer.valueOf(_id));
