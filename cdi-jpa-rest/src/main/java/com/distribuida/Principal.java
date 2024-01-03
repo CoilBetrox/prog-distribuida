@@ -78,6 +78,7 @@ public class Principal {
 
         Spark.port(8080);
 
+        /*
         Persona p = new Persona();
         p.setId(1);
         p.setNombre("name2");
@@ -92,6 +93,7 @@ public class Principal {
         p2.setEdad(23);
         servicio.insert(p2);
 
+         */
 
         Gson gson = new Gson();
         get("/personas", Principal::listarPersonas, gson::toJson);

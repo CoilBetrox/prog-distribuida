@@ -1,5 +1,7 @@
 plugins {
     id("java")
+    id("application")
+    id("io.freefair.lombok") version "8.4"
 }
 
 group = "org.example"
@@ -22,8 +24,21 @@ tasks.test {
     useJUnitPlatform()
 }
 
-sourceSets{
+sourceSets {
     main {
-        output.setResourcesDir(file("${buildDir}/classes/java/main"))
+        output.setResourcesDir( file("${buildDir}/classes/java/main") )
+    }
+}
+
+tasks.jar {
+    manifest {
+        attributes(
+                mapOf("Main-Class" to "com.distribuida.Principal",
+                        "Class-Path" to configurations.runtimeClasspath
+                                .get()
+                                .joinToString (separator = " ") {
+                                    file -> "${file.name}"
+                                })
+        )
     }
 }
