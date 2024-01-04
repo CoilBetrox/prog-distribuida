@@ -9,6 +9,7 @@ import lombok.Data;
 public class Persona {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String nombre;

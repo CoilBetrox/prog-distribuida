@@ -76,30 +76,34 @@ public class Principal {
 
         ServicioPersona servicio = container.select(ServicioPersona.class).get();
 
-        Spark.port(8080);
+        Spark.port(8081);
 
-        /*
-        Persona p = new Persona();
-        p.setId(1);
-        p.setNombre("name2");
-        p.setDireccion("direct1");
-        p.setEdad(22);
-        servicio.insert(p);
+        options("/*", (request, response) -> {
+            String accessControlRequestHeaders = request.headers("Access-Control-Request-Headers");
+            if (accessControlRequestHeaders != null) {
+                response.header("Access-Control-Allow-Headers", accessControlRequestHeaders);
+            }
 
-        Persona p2 = new Persona();
-        p2.setId(2);
-        p2.setNombre("name2");
-        p2.setDireccion("direct2");
-        p2.setEdad(23);
-        servicio.insert(p2);
+            String accessControlRequestMethod = request.headers("Access-Control-Request-Method");
+            if (accessControlRequestMethod != null) {
+                response.header("Access-Control-Allow-Methods", accessControlRequestMethod);
+            }
+            return "OK";
+        });
 
-         */
+        before((request, response) -> {
+            response.header("Access-Control-Allow-Origin", "*");
+            response.header("Access-Control-Request-Method", "*");
+            response.header("Access-Control-Allow-Headers", "*");
+        });
+
+
 
         Gson gson = new Gson();
         get("/personas", Principal::listarPersonas, gson::toJson);
         get("/personas/:id", Principal::buscarPersona, gson::toJson);
         post("/personas", Principal::crearPersona, gson::toJson);
-        put("personas/:id", Principal::actualizarPersona, gson::toJson);
+        put("/personas/:id", Principal::actualizarPersona, gson::toJson);
         delete("/personas/:id", Principal::eliminarPersona, gson::toJson);
 
     }
